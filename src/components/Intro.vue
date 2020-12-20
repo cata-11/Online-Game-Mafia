@@ -27,17 +27,44 @@
 
         <!--Middle-->
         <v-col sm="4">
-          <h1 id="title" :class="{ animation: animate }">MAFIA</h1>
-          <component :is="timer"><Timer /></component>
-          <v-text-field
-            :class="{ disapear: hide }"
-            placeholder="Enter your nickname..."
-            dark
-            append-icon="mdi-plus"
-            autofocus
-            v-model="nickname"
-            @click:append="addPlayer(nickname)"
-          ></v-text-field>
+
+          <div class="d-flex flex-column justify-space-between" style="height: 100%">
+
+            <div>
+              <h1 id="title" :class="{ animation: animate }">MAFIA</h1>
+              <component :is="timer"><Timer /></component>
+              
+              <v-text-field v-if="!gameStarted"
+                placeholder="Enter your nickname..."
+                dark
+                append-icon="mdi-plus"
+                autofocus
+                v-model="nickname"
+                @click:append="addPlayer(nickname)"
+              ></v-text-field>
+            </div>
+
+            <div v-if="gameStarted" class="d-flex flex-column">
+              <h1 id="roleText">Your role is, therefore now you ought to vote</h1>
+
+              <v-select 
+                :items="players"
+                item-text="name"
+                outlined 
+                dark
+                label="Player Name"
+              ></v-select>
+
+              <v-btn
+                outlined
+                x-large
+                color="red"
+              >
+                VOTE
+              </v-btn>
+            </div>
+          </div>
+
         </v-col>
         <!--End Middle-->
 
@@ -93,8 +120,12 @@ export default {
       nickname: "",
       temp: "",
       animate: false,
-      hide: false,
+      gameStarted: false,
       timer: "",
+      players: [
+        {name: "Gica", value:"1"},
+        {name: "Costica", value:"2"},
+      ]
     };
   },
   components: {
@@ -107,6 +138,7 @@ export default {
       this.nickname = "";
       this.animate = true;
       this.hide = true;
+      this.gameStarted = true;
       setTimeout(() => {
         this.timer = "Timer";
       }, 2000);
@@ -146,6 +178,14 @@ export default {
   font-family: "Special Elite", cursive;
   color: RGB(102, 2, 0);
   filter: brightness(200%);
+}
+#roleText
+{
+  font-size: 1.5rem;
+  font-family: "Special Elite", cursive;
+  color: RGB(102, 2, 0);
+  filter: brightness(200%);
+  margin-bottom: 15px;
 }
 @keyframes anime {
   from {
