@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
+    "vue-scrollbar": "^1.0.4",
     "vue2-flip-countdown": "^0.11.1",
     "vuejs-countdown": "^0.2.1",
     "vuejs-countdown-timer": "^2.1.3",

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <FlipCountdown deadline="2020-12-5 00:00:00" :showDays="false" :showHours="false">
+    <FlipCountdown deadline="2020-12-25 00:00:00" :showDays="false" :showHours="false">
     </FlipCountdown>
 </div>
 </template>

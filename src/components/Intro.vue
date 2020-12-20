@@ -6,143 +6,184 @@
         <v-col sm="4" class="align">
           <div class="playersCard">
             <span class="playersTitle"> Alive players </span>
+            <v-divider dark></v-divider>
 
-            <v-virtual-scroll
-              :items="this.$store.state.players"
-              :item-height="50"
-              height="10000"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item>
-                  <v-list-item-title class="playerName">
-                    {{ item }}
-                  </v-list-item-title>
-                </v-list-item>
-              </template>
-            </v-virtual-scroll>
-            
+            <ul class="players">
+              <li
+                v-for="(player, index) in localPlayers"
+                :key="player.id"
+                class="player"
+              >
+                {{ player.name }}
+                <v-btn
+                  class="voteBtn"
+                  @click="vote(index)"
+                  :color="localPlayers[index].voteIcon"
+                  elevation="5"
+                  icon
+                  dark
+                >
+                  <v-icon> mdi-vote </v-icon>
+                </v-btn>
+              </li>
+            </ul>
           </div>
         </v-col>
         <!--End Players-->
 
         <!--Middle-->
         <v-col sm="4">
-
-          <div class="d-flex flex-column justify-space-between" style="height: 100%">
-
-            <div>
-              <h1 id="title" :class="{ animation: animate }">MAFIA</h1>
-              <component :is="timer"><Timer /></component>
-              
-              <v-text-field v-if="!gameStarted"
-                placeholder="Enter your nickname..."
-                dark
-                append-icon="mdi-plus"
-                autofocus
-                v-model="nickname"
-                @click:append="addPlayer(nickname)"
-              ></v-text-field>
-            </div>
-
-            <div v-if="gameStarted" class="d-flex flex-column">
-              <h1 id="roleText">Your role is, therefore now you ought to vote</h1>
-
-              <v-select 
-                :items="players"
-                item-text="name"
-                outlined 
-                dark
-                label="Player Name"
-              ></v-select>
-
-              <v-btn
-                outlined
-                x-large
-                color="red"
-              >
-                VOTE
-              </v-btn>
-            </div>
+          <div>
+            <h1 id="title" :class="{ animation: animate }">MAFIA</h1>
+            <component :is="timer"><Timer /></component>
+            <v-text-field
+              v-if="!playerJoined"
+              placeholder="Enter your nickname..."
+              dark
+              append-icon="mdi-plus"
+              autofocus
+              v-model="player.name"
+              @click:append="addPlayer(player)"
+            ></v-text-field>
           </div>
-
         </v-col>
         <!--End Middle-->
 
         <!--Votes -->
         <v-col sm="4" class="align">
-          <div class="votesCard">
-            <div class="votesTitles">
-              <span class="playersTitle"> Voter </span>
-
-              <span class="playersTitle"> Target </span>
-            </div>
-
-            <v-virtual-scroll
-              :items="this.$store.state.players"
-              :item-height="50"
-              height="10000"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title class="playerName">
-                      {{ item }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                  <v-list-item-content>
-                    <v-list-item-title class="playerName">
-                      {{ item }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </template>
-            </v-virtual-scroll>
+          <div class="playersCard">
+            <v-row>
+              <v-col>
+                <span class="playersTitle">Voter</span>
+                <v-divider dark></v-divider>
+                <ul class="players">
+                  <li v-for="vote in voters" :key="vote.id" class="player">
+                    {{ vote }}
+                  </li>
+                </ul>
+              </v-col>
+              <v-col>
+                <span class="playersTitle">Target</span>
+                <v-divider dark></v-divider>
+                <ul class="players">
+                  <li v-for="target in targets" :key="target.id" class="player">
+                    {{ target.name }}
+                  </li>
+                </ul>
+              </v-col>
+            </v-row>
           </div>
         </v-col>
         <!--End Votes -->
       </v-row>
+      <v-snackbar v-model="snackbar" timeout="2000">
+        {{ this.snackText }}
+        <template v-slot:action="{ attrs }">
+          <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
-
-    <v-snackbar v-model="welcome">
-      Welcome {{ temp }}
-      <template v-slot:action="{ attrs }">
-        <v-btn dark color="red" text v-bind="attrs"> Close </v-btn>
-      </template>
-    </v-snackbar>
   </v-app>
 </template>
 
 <script>
 import Timer from "@/components/Timer.vue";
+import vueScrollbar from "vue-scrollbar";
+
 export default {
   data: function () {
     return {
-      nickname: "",
-      temp: "",
+      player: {
+        name: "",
+        role: "",
+        voteIcon: "",
+      },
+      myName: "",
       animate: false,
-      gameStarted: false,
+      playerJoined: false,
       timer: "",
-      players: [
-        {name: "Gica", value:"1"},
-        {name: "Costica", value:"2"},
-      ]
+      permision: true,
+      snackbar: false,
+      snackText: "",
+
+      localPlayers: [
+        {
+          name: "John",
+          role: "",
+          votes: 0,
+          voteIcon: "",
+        },
+        {
+          name: "SantaClaus",
+          role: "",
+          votes: 0,
+          voteIcon: "",
+        },
+        {
+          name: "Arnold",
+          role: "",
+          votes: 0,
+          voteIcon: "",
+        },
+      ],
+      voters: [],
+      targets: [],
     };
   },
   components: {
     Timer,
+    vueScrollbar,
   },
   methods: {
-    addPlayer(nick) {
-      this.$store.state.players.push(nick);
-      this.temp = this.nickname;
-      this.nickname = "";
+    addPlayer(player) {
+      this.myName = player.name;
+      console.log(this.myName);
+      this.localPlayers.push(player);
       this.animate = true;
-      this.hide = true;
-      this.gameStarted = true;
+      this.playerJoined = true;
       setTimeout(() => {
         this.timer = "Timer";
       }, 2000);
       //console.log(this.$store.state.players);
+    },
+    vote(index) {
+      //console.log(index);
+      if (this.permision == true && this.myName) {
+        this.localPlayers[index].voteIcon = "green";
+        this.localPlayers[index].votes++;
+        this.targets.push(this.localPlayers[index]);
+        this.voters.push(this.myName);
+        this.permision = false;
+      } else {
+        if (!this.myName) {
+          this.snackText = "You can't vote !";
+          this.snackbar = true;
+        } else if (this.myName) {
+          this.snackText = "Your vote has been submitted already !";
+          this.snackbar = true;
+        }
+      }
+      /*
+      if (this.localPlayers[index].voteIcon == "green") {
+        this.localPlayers[index].voteIcon = "";
+        this.targets.splice(index, 1);
+        this.voters.splice(index, 1);
+      } else {
+        this.localPlayers[index].voteIcon = "green";
+        this.targets.push(this.localPlayers[index].name);
+        this.voters.push(this.myName);
+      }
+      for (let i = 0; i < this.localPlayers.length; i++)
+        if (this.localPlayers[i].voteIcon == "green" && i != index)
+          this.localPlayers[i].voteIcon = "";
+
+      for (let i = 0; i < this.localPlayers.length; i++)
+        if (this.localPlayers[i].voteIcon == "green") {
+          this.targets.push(this.localPlayers[i]);
+        }
+        */
     },
   },
 };
@@ -159,7 +200,6 @@ export default {
   height: 100vh;
 }
 #input {
-  font-size: 10rem;
   color: white;
   display: flex;
   justify-content: center;
@@ -171,6 +211,23 @@ export default {
   justify-content: center;
   text-align: center;
 }
+.players {
+  text-decoration: none;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.player {
+  font-size: 1.5rem;
+  color: white;
+  margin: 0.4rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.voteBtn {
+  margin: 0 0.5rem;
+}
+
 #title {
   margin: 10rem 0 0 0;
   letter-spacing: 0.8rem;
@@ -179,8 +236,7 @@ export default {
   color: RGB(102, 2, 0);
   filter: brightness(200%);
 }
-#roleText
-{
+#roleText {
   font-size: 1.5rem;
   font-family: "Special Elite", cursive;
   color: RGB(102, 2, 0);

@@ -8,6 +8,8 @@ export default new Vuex.Store({
     players: [],
   },
   mutations: {},
-  actions: {},
+  actions: {
+    // connect player to server
+  },
   modules: {}
 });
