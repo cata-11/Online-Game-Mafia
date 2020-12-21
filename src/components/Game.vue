@@ -16,6 +16,7 @@
               >
                 {{ player.name }}
                 <v-btn
+                  v-if="rolesAreAsigned"
                   class="voteBtn"
                   @click="vote(index)"
                   :color="localPlayers[index].voteIcon"
@@ -34,11 +35,18 @@
         <!--Middle-->
         <v-col sm="4">
           <div>
-            <h1 id="title" :class="{ animation: animate }">MAFIA</h1>
+            <h1 id="title" :class="{ animation: animateTitle }">MAFIA</h1>
             <component :is="timer"><Timer /></component>
+            <h2 class="roleText" v-if="rolesAreAsigned">
+              You are <span class="role">{{ myRole }}</span>
+            </h2>
+            <i v-if="night" class="fas fa-moon"></i>
+            <i v-if="day" class="fas fa-sun"></i>
             <v-text-field
               v-if="!playerJoined"
               placeholder="Enter your nickname..."
+              counter
+              maxlength="10"
               dark
               append-icon="mdi-plus"
               autofocus
@@ -53,16 +61,16 @@
         <v-col sm="4" class="align">
           <div class="playersCard">
             <v-row>
-              <v-col>
+              <v-col sm="6">
                 <span class="playersTitle">Voter</span>
                 <v-divider dark></v-divider>
                 <ul class="players">
-                  <li v-for="vote in voters" :key="vote.id" class="player">
-                    {{ vote }}
+                  <li v-for="name in voters" :key="name.id" class="player">
+                    {{ name }}
                   </li>
                 </ul>
               </v-col>
-              <v-col>
+              <v-col sm="6">
                 <span class="playersTitle">Target</span>
                 <v-divider dark></v-divider>
                 <ul class="players">
@@ -77,7 +85,7 @@
         <!--End Votes -->
       </v-row>
       <v-snackbar v-model="snackbar" timeout="2000">
-        {{ this.snackText }}
+        {{ snackText }}
         <template v-slot:action="{ attrs }">
           <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
             Close
@@ -89,8 +97,8 @@
 </template>
 
 <script>
+/* eslint-disable */
 import Timer from "@/components/Timer.vue";
-import vueScrollbar from "vue-scrollbar";
 
 export default {
   data: function () {
@@ -100,14 +108,29 @@ export default {
         role: "",
         voteIcon: "",
       },
+      games: [
+        {
+          img: "link.com",
+          video: "",
+          info: "asdasdasdasdasdasd",
+          infos: {
+            title: "",
+            desc: "",
+          },
+        },
+      ],
+
       myName: "",
-      animate: false,
+      myRole: "KILLER",
+      animateTitle: false,
       playerJoined: false,
       timer: "",
       permision: true,
       snackbar: false,
       snackText: "",
-
+      rolesAreAsigned: false,
+      night: false,
+      day: false,
       localPlayers: [
         {
           name: "John",
@@ -128,28 +151,37 @@ export default {
           voteIcon: "",
         },
       ],
-      voters: [],
-      targets: [],
+      voters: ["Vasile"],
+      targets: [
+        {
+          name: "Ion",
+        },
+      ],
     };
   },
   components: {
     Timer,
-    vueScrollbar,
   },
   methods: {
     addPlayer(player) {
       this.myName = player.name;
       console.log(this.myName);
       this.localPlayers.push(player);
-      this.animate = true;
+      this.animateTitle = true;
       this.playerJoined = true;
       setTimeout(() => {
         this.timer = "Timer";
       }, 2000);
-      //console.log(this.$store.state.players);
+      setTimeout(() => {
+        this.rolesAreAsigned = true; /// temporar
+        this.night = true;
+        setInterval(() => {
+          this.night = !this.night;
+          this.day = !this.day;
+        }, 2000);
+      }, 4000);
     },
     vote(index) {
-      //console.log(index);
       if (this.permision == true && this.myName) {
         this.localPlayers[index].voteIcon = "green";
         this.localPlayers[index].votes++;
@@ -165,25 +197,6 @@ export default {
           this.snackbar = true;
         }
       }
-      /*
-      if (this.localPlayers[index].voteIcon == "green") {
-        this.localPlayers[index].voteIcon = "";
-        this.targets.splice(index, 1);
-        this.voters.splice(index, 1);
-      } else {
-        this.localPlayers[index].voteIcon = "green";
-        this.targets.push(this.localPlayers[index].name);
-        this.voters.push(this.myName);
-      }
-      for (let i = 0; i < this.localPlayers.length; i++)
-        if (this.localPlayers[i].voteIcon == "green" && i != index)
-          this.localPlayers[i].voteIcon = "";
-
-      for (let i = 0; i < this.localPlayers.length; i++)
-        if (this.localPlayers[i].voteIcon == "green") {
-          this.targets.push(this.localPlayers[i]);
-        }
-        */
     },
   },
 };
@@ -191,6 +204,28 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Special+Elite&display=swap");
+
+.fa-moon {
+  color: rgb(255, 217, 0);
+  font-size: 15rem;
+  margin-top: 7vh;
+}
+.fa-sun {
+  color: rgb(255, 217, 0);
+  font-size: 15rem;
+  margin-top: 7vh;
+}
+
+.roleText {
+  letter-spacing: 0.5rem;
+  font-size: 1.5rem;
+  font-family: "Special Elite";
+}
+.role {
+  color: RGB(102, 2, 0);
+  font-size: 1.5rem;
+  filter: brightness(250%);
+}
 
 #intro {
   background-image: url("https://cdn.wallpapersafari.com/87/97/nOthRF.jpg");
@@ -227,14 +262,13 @@ export default {
 .voteBtn {
   margin: 0 0.5rem;
 }
-
 #title {
   margin: 10rem 0 0 0;
   letter-spacing: 0.8rem;
   font-size: 5rem;
   font-family: "Special Elite", cursive;
   color: RGB(102, 2, 0);
-  filter: brightness(200%);
+  filter: brightness(225%);
 }
 #roleText {
   font-size: 1.5rem;
@@ -278,16 +312,25 @@ export default {
   height: 80vh;
   margin: 3rem 0 0 0;
   border-radius: 1%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+.playersCard::-webkit-scrollbar {
+  width: 0.5rem;
+}
+.playersCard::-webkit-scrollbar-track {
+  background: grey;
+}
+.playersCard::-webkit-scrollbar-thumb {
+  background: rgb(26, 26, 26);
+}
+
 .playersTitle {
   font-size: 2.2rem;
   color: rgb(236, 224, 46);
   padding: 0.5rem;
 }
-.playerName {
-  color: white;
-  font-size: 1.7rem;
-}
+
 .votesCard {
   background: rgba(215, 211, 226, 0.2);
   display: flex;

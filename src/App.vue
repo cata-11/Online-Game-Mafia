@@ -1,17 +1,17 @@
 <template>
   <v-app>
     <v-main>
-      <Intro />
+      <Game />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Intro from "@/components/Intro.vue";
+import Game from "@/components/Game.vue";
 export default {
   name: "App",
   components: {
-    Intro,
+    Game,
   },
 
   data: () => ({
@@ -21,9 +21,8 @@ export default {
 </script>
 
 <style>
-*{
-  margin: 0;
-  box-sizing: border-box;
+html{
+  overflow: auto;
 }
 
 </style>
