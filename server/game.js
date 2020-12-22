@@ -8,18 +8,6 @@ var nightDuration = 30;
 var dayCount = 0;
 var nightCount = 0;
 
-var wills = false;
-
-function clone(obj) {
-	if(obj == null || typeof(obj) != 'object')
-		return obj;
-
-	var temp = obj.constructor(); // changed
-
-	for(var key in obj)
-		temp[key] = clone(obj[key]);
-	return temp;
-}
 
 function checkVictory () {
 	var villageVictory = (io.sockets.clients('mafia').length === 0);
@@ -50,36 +38,8 @@ function killPlayer (socket) {
 	playerDeathCleanup(socket);
 	io.sockets.emit('playerDied', socket.game_nickname);
 
-	if (wills) {
-		if (socket.game_will !== '') {
-			io.sockets.emit('message', { message: socket.game_nickname + '\'s will: ' + socket.game_will});
-		} else {
-			io.sockets.emit('message', { message: socket.game_nickname + ' did not leave a will.'});
-		}
-	}
-
 	checkVictory();
 }
-
-//item definitions
-var items = {
-	gun: {
-		name: 'Handgun',
-		description: 'Easily concealed snubnosed handgun with a single bullet',
-		actionName: 'shoot',
-		power: true, //does the item present a menu during daytime
-		powerFunc: function (socket, chosenPlayer) {
-			if (Math.random() < 0.25) {
-				io.sockets.emit('message', { message: socket.game_nickname + ' pulls out a gun and shoots ' + chosenPlayer.game_nickname + '!'});
-			} else {
-				io.sockets.emit('message', { message: 'A loud gunshot is heard, and a bullet tears through ' + chosenPlayer.game_nickname + '\'s chest! After the dust settles, you realize no one saw exactly who shot him...'});
-			}
-
-			killPlayer(chosenPlayer);
-		}
-	}
-};
-//end item definitions
 
 //role definitions, to be moved to a JSON file at some point in the near future
 var roles = {
@@ -109,15 +69,6 @@ var roles = {
 			}
 		}
 	},
-	gunsmith: {
-		name: 'gunsmith',
-		group: 'village',
-		power: true,
-		powerFunc: function (socket, chosenPlayer) {
-			chosenPlayer.game_inventory.push(clone(items['gun']));
-			socket.emit('message', { message: 'You gave ' + chosenPlayer.game_nickname + ' a gun.'}); //probably just for testing
-		}
-	},
 	mafioso: {
 		name: 'mafioso',
 		group: 'mafia',
@@ -137,7 +88,7 @@ var playerRoles_default = [
 	roles['mafioso'],
 	roles['mafioso']
 ];
-
+/*
 if (argv.custom) {
 	for (var i = 0; i < argv._.length; i++) {
 		if (roles[argv._[i]]) {
@@ -154,7 +105,7 @@ if (argv.custom) {
 } else {
 	playerRoles = playerRoles_default;
 }
-
+*/
 function shuffle (array) {
 	var m = array.length, t, i;
 
@@ -390,15 +341,6 @@ function nightLoop(duration, ticks) {
 
 				var votingPlayers = [];
 				io.sockets.clients('alive').forEach(function (socket) {
-					if (socket.game_inventory.length) {
-						socket.emit('displayInventory', true);
-
-						for (var i = 0; i < socket.game_inventory.length; i++) {
-							socket.emit('newInventoryItem', { index: i, item: socket.game_inventory[i] });
-						}
-					} else {
-						socket.emit('displayInventory', false);
-					}
 
 					votingPlayers.push(socket.game_nickname);
 
@@ -424,14 +366,6 @@ function initialize () {
 	io.sockets.clients('alive').forEach(function (socket) {
 		livingPlayers.push(socket.game_nickname);
 	});
-
-	//possibly replace this later with a point for injecting this kind of thing, I would like everything to be modular
-	if (wills) {
-		io.sockets.emit('message', { message: 'This game session has wills enabled. Type /will to set yours.' });
-		io.sockets.clients('alive').forEach(function (socket) {
-			socket.game_will = '';
-		});
-	}
 
 	io.sockets.in('alive').emit('playerList', livingPlayers);
 	if (dayStart) {
@@ -505,47 +439,6 @@ module.exports = {
 		}
 		updateHeader('Pre-game Lobby');
 	},
-	filterMessage: function(socket, data) {
-		var clientRooms = io.sockets.manager.roomClients[socket.id];
-
-		if (data.message[0] !== '/') {
-			if (state === 0 || state === -1 || (state === 2 && socket.game_alive)) {
-				io.sockets.emit('message', data);
-			} else if (clientRooms['/spectator'] || !socket.game_alive) {
-				data.message = '<font color="red">' + data.message + '</font>';
-				io.sockets.in('spectator').emit('message', data);
-			} else if (state === 1) {
-				if (clientRooms['/mafia']) {
-					io.sockets.in('mafia').emit('message', data);
-				}
-			}
-		} else {
-			var validCommand = false;
-
-			//again will probably replace this with something that iterates through a list that gets built on startup
-			//so people will be able to add their own chat commands without actually modifying the source
-			if (wills && data.message.indexOf('/will ') === 0) {
-				var willText = data.message.replace('/will ','');
-
-				var maxWillLength = 140;
-				if (willText.length > 0) {
-					if (willText.length < maxWillLength) {
-						socket.game_will = willText;
-						socket.emit('message', { message: 'Your will has been revised.' });
-					} else {
-						socket.emit('message', { message: 'Please keep your will under ' + maxWillLength + ' characters.' });
-					}
-				} else {
-					socket.emit('message', { message: 'Usage: /will [your will content]' });
-				}
-
-				validCommand = true;
-			}
-
-			if (!validCommand)
-				socket.emit('message', { message: 'Command was not recognized.' });
-		}
-	},
 	vote: function(socket, data) {
 		data.username = socket.game_nickname;
 
@@ -582,25 +475,7 @@ module.exports = {
 			}
 		}
 	},
-	itemUse: function(socket, data) {
-		var targetSocket = '';
 
-		if (state === 2) { // right now you can only use items in the daytime
-			io.sockets.clients().forEach(function (socket2) {
-				if (socket2.game_nickname == data.target) {
-					targetSocket = socket2;
-				}
-			});
-		}
-
-		if (targetSocket !== '') {
-			if (socket.game_inventory[data.index] && socket.game_inventory[data.index].power) {
-				socket.game_inventory[data.index].powerFunc(socket, targetSocket);
-				socket.game_inventory.splice(data.index, 1);
-				socket.emit('removeInventoryItem', data.index);
-			}
-		}
-	},
 	state: function() {
 		return state;
 	},
@@ -609,8 +484,5 @@ module.exports = {
 	},
 	header: function () {
 		return header;
-	},
-	enableWills: function () {
-		wills = true;
 	}
 };
