@@ -3,9 +3,18 @@ const game = require('./game');
 const express = require("express");
 const app = express();
 const port = 3000;
-const http = require("http").createServer();
+const httpServer  = require("http").createServer();
 
-const io = require('../node_modules/socket.io')(http);
+const io = require('../node_modules/socket.io')(httpServer, {
+	cors: {
+		origin: "http://localhost:8080",
+		methods: ["GET", "POST"]
+	}
+});
+
+httpServer.listen(port, () => {
+	console.log("Server started on port " + port);
+});
 
 const defaultCountdownTime = 10;
 game.countdownTime = defaultCountdownTime;
@@ -14,7 +23,7 @@ io.sockets.on('connection', (socket) =>
 {
 	socket.emit('message', { message: 'Welcome to the lobby.' });
 	socket.broadcast.emit('message', { message: 'A new client has connected.' });
-
+console.log("merge");
 	//request announcement and header from the game
 	socket.emit('announcement', { message: game.announcement() });
 	socket.emit('header', { message: game.header() });
@@ -66,8 +75,4 @@ io.sockets.on('connection', (socket) =>
 			socket.emit('alert', { message: 'Nickname is not valid.' });
 		}
 	});
-});
-
-http.listen(port, () => {
-	console.log("Server started on port " + port);
 });

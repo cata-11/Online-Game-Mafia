@@ -4,12 +4,19 @@ import vuetify from "./plugins/vuetify";
 import store from "./store";
 import VueCountdownTimer from "vuejs-countdown-timer";
 
-import socketio from "socket.io";
-import VueSocketIO from "vue-socket.io";
+import VueSocketIO from 'vue-socket.io'
+import SocketIO from "socket.io-client"
 
-export const SocketInstance = socketio("http://localhost:4113");
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: SocketIO('http://localhost:3000/'),
+    vuex: {
+        store,
+        actionPrefix: 'SOCKET_',
+        mutationPrefix: 'SOCKET_'
+    }
+}))
 
-Vue.use(VueSocketIO, SocketInstance);
 Vue.use(VueCountdownTimer);
 Vue.config.productionTip = false;
 
