@@ -1,0 +1,51 @@
+body {
+	background-color: rgb(51, 51, 51);
+}
+
+#main-view {
+	width:1000px;
+	margin: 0 auto;
+}
+
+#flex-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+#left-pane {
+	background-color: #fff;
+	min-height: 300px;
+	min-width: 150px;
+	max-width: 20%;
+
+	order: 1;
+	flex-grow: 1;
+}
+
+#middle-pane {
+	order: 2;
+	flex-grow: 2;
+}
+
+#content {
+	background-color: #FFFFFF;
+	height: 300px;
+	padding: 5px;
+	border: solid 1px #999;
+	overflow-y: scroll;
+}
+
+#right-pane {
+	background-color: #fff;
+	padding: 5px;
+	min-height: 300px;
+	min-width: 150px;
+	max-width: 20%;
+
+	order: 3;
+	flex-grow: 1;
+}
+
