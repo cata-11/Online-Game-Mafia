@@ -1,11 +1,14 @@
+var socket;
+
 $(document).ready(function() {
 	var messages = [];
-	var socket = io.connect('http://'+location.host);
+	socket = io.connect('http://'+location.host);
 	var nameButton = document.getElementById("nick");
 	var startButton = document.getElementById("startButton");
 	var content = document.getElementById("content");
 	var name = document.getElementById("name");
 	var select = document.getElementById("select");
+	var validTargets = [];
 
 	socket.on('message', function (data) {
 		if(data.message) {
@@ -31,13 +34,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('displayVote', function (data) {
-		if (data) {
-			selectArea.style.display = 'inline-block';
-			votingPlayers.innerHTML = '';
-		} else {
-			selectArea.style.display = 'none';
-			votingPlayers.innerHTML = '';
-		}
+		votingPlayers.innerHTML = '';
 	});
 
 	socket.on('disableVote', function (data) {
@@ -68,11 +65,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('validTargets', function (data) {
-		for (var i = 0; i < data.length; i++) {
-			var option = document.createElement('option');
-			option.value = option.text = data[i];
-			select.add(option);
-		}
+		validTargets = data;
 	});
 
 	var blankOption = document.createElement("option");
@@ -92,8 +85,25 @@ $(document).ready(function() {
 
 		document.getElementById("player-list").innerHTML = '';
 
-		for (var i = 0; i < data.length; i++) {
-			list.append('<li>' + data[i] + '</li>');
+		for (var i = 0; i < data.length; i++) 
+		{
+			var OK = 0;
+			for (var j = 0; j < validTargets.length; j++)
+			{
+				if (validTargets[j] == data[i])
+				{
+					OK = 1;
+				}
+			}
+
+			if (OK)
+			{
+				list.append('<li>' + '<p>' + data[i] + '</p>' + '<button onClick=votePlayer("' + data[i] + '")> Vote </button>' + '</li>');
+			}
+			else
+			{
+				list.append('<li>' + '<p>' + data[i] + '</p>' + '</li>');
+			}
 		}
 	});
 
@@ -109,7 +119,9 @@ $(document).ready(function() {
 		socket.emit('startGame');
 	}
 
-	vote.onclick = function() {
-		socket.emit('vote', { message: select.value });
-	};
 });
+
+function votePlayer(playerName)
+{
+	socket.emit('vote', { message: playerName });
+}

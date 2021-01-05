@@ -27,9 +27,6 @@ function playerDeathCleanup (socket) {
 	socket.game_alive = false;
 	socket.leave('alive');
 
-	socket.emit('disableField', false);
-	socket.emit('displayVote', true);
-	socket.emit('disableVote', true);
 
 	socket.game_role = null;
 	socket.leave('village');
@@ -40,11 +37,7 @@ function playerDeathCleanup (socket) {
 function killPlayer (socket) {
 	playerDeathCleanup(socket);
 	
-	var livingPlayers = [];
-	io.sockets.clients('alive').forEach(function (socket) {
-		livingPlayers.push(socket.game_nickname);
-	});
-	io.sockets.in('alive').emit('playerList', livingPlayers);
+	updateAlivePlayerList();
 
 	checkVictory();
 }
@@ -262,12 +255,12 @@ function dayLoop(duration, ticks) {
 
 				var validMafiaTargets = [];
 				io.sockets.clients('village').forEach(function (socket) {
-					socket.emit('disableField', true);
 					socket.emit('displayVote', false);
 					validMafiaTargets.push(socket.game_nickname);
 				});
 
 				io.sockets.in('mafia').emit('validTargets', validMafiaTargets);
+				updateAlivePlayerList ();
 
 				var powerRoles = io.sockets.clients('alive').filter(function (socket) {
 					return socket.game_role.power;
@@ -284,6 +277,7 @@ function dayLoop(duration, ticks) {
 
 					socket.emit('displayVote', true);
 					socket.emit('validTargets', validPowerTargets);
+					updateAlivePlayerList ();
 				});
 
 				var votingPlayers = [];
@@ -334,7 +328,6 @@ function nightLoop(duration, ticks) {
 				dayCount++;
 				updateAnnouncement('It is now daytime');
 
-				io.sockets.in('alive').emit('disableField', false);
 				io.sockets.in('alive').emit('displayVote', true);
 
 				io.sockets.in('alive').emit('clearTargets');
@@ -350,6 +343,7 @@ function nightLoop(duration, ticks) {
 				});
 
 				io.sockets.in('alive').emit('validTargets', votingPlayers);
+				updateAlivePlayerList ();
 				io.sockets.emit('votingPlayers', votingPlayers);
 
 				setTimeout(dayLoop, 1000, dayDuration, 0);
@@ -363,11 +357,7 @@ function nightLoop(duration, ticks) {
 function initialize () {
 	assignRoles();
 
-	var livingPlayers = [];
-	io.sockets.clients('alive').forEach(function (socket) {
-		livingPlayers.push(socket.game_nickname);
-	});
-	io.sockets.in('alive').emit('playerList', livingPlayers);
+	updateAlivePlayerList();
 
 	if (dayStart) {
 		nightLoop(0, 0);
@@ -415,6 +405,20 @@ function hasEveryoneVoted () {
 	return votedFlag;
 }
 
+function updateAlivePlayerList ()
+{
+	var displayedPlayers = [];
+
+	io.sockets.clients('alive').forEach(function (socket) {
+		if (socket.game_nickname != null)
+		{
+			displayedPlayers.push(socket.game_nickname);
+		}
+	});
+
+	io.sockets.emit('playerList', displayedPlayers);
+}
+
 module.exports = {
 	countdownTime: 0, //time before game starts once enough players have joined (in seconds)
 	updatePlayers: function() {
@@ -442,14 +446,7 @@ module.exports = {
 		}
 		else
 		{
-			io.sockets.clients('alive').forEach(function (socket) {
-				if (socket.game_nickname != null)
-				{
-					displayedPlayers.push(socket.game_nickname);
-				}
-			});
-
-			io.sockets.emit('playerList', displayedPlayers);
+			updateAlivePlayerList ();
 		}
 	},
 	startGame: function() {
