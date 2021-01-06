@@ -1,5 +1,92 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+  <title>Mafia</title>
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="/client.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+  </head>
+
+<body>
+  <main class="main">
+    <div class="container-fluid">
+      <div class="row">
+        <!--alive players start-->
+        <div class="col">
+          
+          <div class="playersCard">
+            <span class="playersTitle"> Alive players </span>
+            <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
+            <ul class="players" >
+              <li class="player">Santa Claus
+                <span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!--alive players end-->
+        <!--middle start-->
+        <div class="col middle">
+         <h1 class="title">MAFIA</h1>
+         <form >
+          <input type="text" placeholder="Enter your nickname..." class="input">
+        </form>      
+        </div>
+        <!--middle end-->
+        <!--Voters and Targets start-->
+        <div class="col">
+          <div class="votersCard">
+         <div class="row">
+           <!--Voters start-->
+           <div class="col">
+            <span class="playersTitle align"> Voter </span>
+            <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
+            <ul class="players">
+              <li class="player">Santa Claus</li>
+            </ul>
+           </div>
+           <!--Voters end-->
+           <div class="col">
+            <span class="playersTitle align"> Target </span>
+            <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
+            <ul class="players">
+              <li class="player">Nigger</li>
+            </ul>
+           </div>
+           </div>
+           
+           <!--Targets end-->
+         </div>
+        </div>
+        </div>
+        <!--Voters and Targets end-->
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html>
   <head>
     <title>OpenMafia</title>
     <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -43,3 +130,4 @@
     </div>
   </body>
 </html>
+-->

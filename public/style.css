@@ -1,51 +1,205 @@
-body {
-	background-color: rgb(51, 51, 51);
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+.fa-moon {
+  color: rgb(255, 217, 0);
+  font-size: 15rem;
+  margin-top: 7vh;
+}
+.fa-sun {
+  color: rgb(255, 217, 0);
+  font-size: 15rem;
+  margin-top: 7vh;
 }
 
-#main-view {
-	width:1000px;
-	margin: 0 auto;
+.roleText {
+  letter-spacing: 0.5rem;
+  font-size: 1.5rem;
+  font-family: "Special Elite";
+}
+.role {
+  color: RGB(102, 2, 0);
+  font-size: 1.5rem;
+  filter: brightness(250%);
 }
 
-#flex-container {
+.main {
+  background-image: url("https://cdn.wallpapersafari.com/87/97/nOthRF.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+}
+#input {
+  color: white;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+.align {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+.players {
+  text-decoration: none;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+}
+.player {
+  font-size: 1.6rem;
+  color: white;
+  margin: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+.voteBtn {
+  margin: 0 .5rem;
+  border-radius: 50%;
+  color: white;
+  font-size: 2.5rem;
+  outline: none;
+  background-color: rgb(31, 30, 30);
+  padding: .5rem;
+  transition: all 1s;
+}
+.voteBtn-active{
+  color: rgb(138, 226, 23);
+  outline: none;
+}
+.voteBtn:hover{
+  background-color: rgba(165, 159, 159, 0.623);
+  cursor: pointer;
+  outline: none;
+}
+.middle {
 	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: space-between;
-	align-items: flex-start;
+	justify-content: center;
+	text-align: center;
+	flex-direction: column;
+}
+.title {
+  letter-spacing: 0.8rem;
+  font-size: 5rem;
+  font-family: "Special Elite", cursive;
+  color: RGB(102, 2, 0);
+  filter: brightness(225%);
+  font-weight: bold;
+}
+#roleText {
+  font-size: 1.5rem;
+  font-family: "Special Elite", cursive;
+  color: RGB(102, 2, 0);
+  filter: brightness(200%);
+  margin-bottom: 15px;
+}
+@keyframes anime {
+  from {
+    margin: 10rem 0 0 0;
+  }
+  to {
+    margin: 0;
+  }
+}
+.animation {
+  animation-name: anime;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+@keyframes show {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+.disapear {
+  animation-name: show;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+.playersCard {
+  background: rgba(215, 211, 226, 0.2);
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 80vh;
+  margin: 4.5rem 2rem;
+  border-radius: 1%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.playersCard::-webkit-scrollbar {
+  width: 0.5rem;
+}
+.playersCard::-webkit-scrollbar-track {
+  background: grey;
+}
+.playersCard::-webkit-scrollbar-thumb {
+  background: rgb(26, 26, 26);
+}
+.votersCard{
+  background: rgba(215, 211, 226, 0.2);
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 80vh;
+  margin: 4.5rem 2rem 4.5rem 0;
+  border-radius: 1%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.votersCard::-webkit-scrollbar {
+  width: 0.5rem;
+}
+.votersCard::-webkit-scrollbar-track {
+  background: grey;
+}
+.votersCard::-webkit-scrollbar-thumb {
+  background: rgb(26, 26, 26);
 }
 
-#left-pane {
-	background-color: #fff;
-	min-height: 300px;
-	min-width: 150px;
-	max-width: 20%;
+.playersTitle {
+  font-size: 2.2rem;
+  color: rgb(236, 224, 46);
+  padding: 0.3rem;
+  padding-bottom: 0;
+  margin: 0 auto;
 
-	order: 1;
-	flex-grow: 1;
 }
 
-#middle-pane {
-	order: 2;
-	flex-grow: 2;
+.votesCard {
+  background: rgba(215, 211, 226, 0.2);
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 80vh;
+  margin: 3rem 0 0 0;
+  border-radius: 1%;
+}
+.votesTitles {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
-#content {
-	background-color: #FFFFFF;
-	height: 300px;
-	padding: 5px;
-	border: solid 1px #999;
-	overflow-y: scroll;
+.input {
+outline: none;
+color: white;
+background-color: black ;
+border: none;
+border-bottom: 1px solid white;
+width: 90%;
+position: relative;
+font-size: 1.2rem;
+font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
-#right-pane {
-	background-color: #fff;
-	padding: 5px;
-	min-height: 300px;
-	min-width: 150px;
-	max-width: 20%;
-
-	order: 3;
-	flex-grow: 1;
+*{
+  box-sizing: border-box;
+  padding: 0;
 }
-
