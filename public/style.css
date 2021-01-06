@@ -36,6 +36,13 @@
   text-align: center;
   margin: 0;
 }
+
+#nick {
+  color: white;
+  background-color: transparent;
+  font-size: xx-large;
+  border: none;
+}
 .align {
   display: flex;
   justify-content: center;
@@ -76,9 +83,19 @@
 }
 .middle {
 	display: flex;
-	justify-content: center;
 	text-align: center;
 	flex-direction: column;
+}
+.umplutura {
+  flex: 1;
+}
+.riseAnimation {
+  flex: 0.1;
+  animation: moveAnim 1.5s alternate 1;
+}
+@keyframes moveAnim {
+  from { flex: 1 }
+  to{ flex: 0.1 }
 }
 .title {
   letter-spacing: 0.8rem;
@@ -194,9 +211,14 @@ background-color: black ;
 border: none;
 border-bottom: 1px solid white;
 width: 90%;
-position: relative;
 font-size: 1.2rem;
 font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 *{

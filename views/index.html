@@ -22,20 +22,23 @@
           <div class="playersCard">
             <span class="playersTitle"> Alive players </span>
             <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
-            <ul class="players" >
-              <li class="player">Santa Claus
-                <span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false"></span>
-              </li>
+            <ul class="players" id="player-list">
+
             </ul>
           </div>
         </div>
         <!--alive players end-->
         <!--middle start-->
         <div class="col middle">
-         <h1 class="title">MAFIA</h1>
-         <form >
-          <input type="text" placeholder="Enter your nickname..." class="input">
-        </form>      
+          <div class="umplutura" id="umpluturaDeasupra"></div>
+          
+          <h1 class="title">MAFIA</h1>
+          <div class="inputContainer">
+            <input type="text" placeholder="Enter your nickname..." id="name" class="input">
+            <input id="nick" type="button" value="+">
+          </div>
+
+          <div class="umplutura"></div>
         </div>
         <!--middle end-->
         <!--Voters and Targets start-->
@@ -46,16 +49,16 @@
            <div class="col">
             <span class="playersTitle align"> Voter </span>
             <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
-            <ul class="players">
-              <li class="player">Santa Claus</li>
+            <ul class="players" id="player-voter">
+              
             </ul>
            </div>
            <!--Voters end-->
            <div class="col">
             <span class="playersTitle align"> Target </span>
             <hr style="width: 80%; margin: 1rem  auto; border: 1px solid white">
-            <ul class="players">
-              <li class="player">Nigger</li>
+            <ul class="players" id="player-target">
+              
             </ul>
            </div>
            </div>

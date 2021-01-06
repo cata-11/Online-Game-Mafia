@@ -10,6 +10,9 @@ $(document).ready(function() {
 	var select = document.getElementById("select");
 	var validTargets = [];
 
+	var votingPlayers = document.getElementById("player-voter");
+	var targetPlayers = document.getElementById("player-target");
+
 	socket.on('message', function (data) {
 		if(data.message) {
 			messages.push(data);
@@ -31,6 +34,8 @@ $(document).ready(function() {
 	socket.on('hideNameField', function (data) {
 		name.style.display = 'none';
 		nameButton.style.display = 'none';
+
+		document.getElementById("umpluturaDeasupra").className += " riseAnimation";
 	});
 
 	socket.on('displayVote', function (data) {
@@ -48,11 +53,15 @@ $(document).ready(function() {
 	});
 
 	socket.on('votingPlayers', function (data) {
-		var html = '';
+		var votingPlayersHTML = '';
+		var targetPlayersHTML = '';
+
 		for (var i = 0; i < data.length; i++) {
-			html += '<b>' + data[i] + '</b> votes for <i id="' + data[i] + '_vote"></i><br>';
+			votingPlayersHTML += '<li class="player">' + data[i] + '</li>';
+			targetPlayersHTML += '<li class="player" id="' + data[i] + '_vote"></li>';
 		}
-		votingPlayers.innerHTML = html;
+		votingPlayers.innerHTML = votingPlayersHTML;
+		targetPlayers.innerHTML = targetPlayersHTML;
 	});
 
 	socket.on('playerVote', function (data) {
@@ -98,11 +107,11 @@ $(document).ready(function() {
 
 			if (OK)
 			{
-				list.append('<li>' + '<p>' + data[i] + '</p>' + '<button onClick=votePlayer("' + data[i] + '")> Vote </button>' + '</li>');
+				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false" onClick=votePlayer("' + data[i] + '")></span> </li>');
 			}
 			else
 			{
-				list.append('<li>' + '<p>' + data[i] + '</p>' + '</li>');
+				list.append('<li class="player">' + data[i] + '</li>');
 			}
 		}
 	});
