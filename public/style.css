@@ -1,26 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
+
+.roleText {
+  letter-spacing: 0.5rem;
+  font-size: 2rem;
+  font-family: "Special Elite";
+  color: white;
+}
+.role {
+  color: RGB(102, 2, 0);
+  font-size: 2rem;
+  filter: brightness(250%);
+  margin-left: 1rem;
+}
 .fa-moon {
   color: rgb(255, 217, 0);
-  font-size: 15rem;
+  font-size: 12rem;
   margin-top: 7vh;
 }
 .fa-sun {
   color: rgb(255, 217, 0);
-  font-size: 15rem;
+  font-size: 12rem;
   margin-top: 7vh;
 }
 
-.roleText {
-  letter-spacing: 0.5rem;
-  font-size: 1.5rem;
-  font-family: "Special Elite";
-}
-.role {
-  color: RGB(102, 2, 0);
-  font-size: 1.5rem;
-  filter: brightness(250%);
-}
+
 
 .main {
   background-image: url("https://cdn.wallpapersafari.com/87/97/nOthRF.jpg");
@@ -90,12 +94,12 @@
   flex: 1;
 }
 .riseAnimation {
-  flex: 0.1;
+  flex: 0.2;
   animation: moveAnim 1.5s alternate 1;
 }
 @keyframes moveAnim {
   from { flex: 1 }
-  to{ flex: 0.1 }
+  to{ flex: 0.2 }
 }
 .title {
   letter-spacing: 0.8rem;
@@ -224,4 +228,53 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
 *{
   box-sizing: border-box;
   padding: 0;
+}
+
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@800&display=swap');
+.timer-container {
+  margin: 2rem auto;
+  text-align: center;
+  margin-top: 0;
+}
+.timer-container ul {
+  padding: 0;
+}
+#countdown li {
+  margin: .3rem;
+  border: 3px solid  rgb(39, 38, 38);
+  display: inline-block;
+  font-size: 1.5em;
+  list-style-type: none;
+  padding: 1rem;
+  padding-top: 0;
+  color: rgb(236, 201, 46);
+  width: 7rem;
+  height: 5.5rem;
+  background-image: linear-gradient(to bottom right, rgb(20, 19, 19), rgb(58, 58, 56));
+  border-radius: 1rem;
+  font-family: 'Inconsolata', monospace;
+
+}
+#minutes {
+  display: block;
+  font-size: 3.5rem;
+  color: rgb(236, 201, 46);
+}
+#seconds {
+  display: block;
+  font-size: 3.5rem;
+  color: rgb(236, 201, 46);
+}
+.t{
+  font-size: 1.25rem;
+  color: white;
+}
+
+#content {
+  display: none;
+  padding: 1rem;
 }
