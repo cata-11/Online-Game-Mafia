@@ -9,9 +9,33 @@ $(document).ready(function() {
 	var dayNight = document.getElementById("dayNight");
 	var messages = document.getElementById("serverMessages");
 	var validTargets = [];
+	var ownVotingActive;
 
 	var votingPlayers = document.getElementById("player-voter");
 	var targetPlayers = document.getElementById("player-target");
+
+	socket.on('spectatorMode', function () {
+		validTargets = [];
+		ownVotingActive = false;
+		
+		name.style.display = 'none';
+		nameButton.style.display = 'none';
+		messages.classList.remove("hidden");
+
+		document.getElementById("umpluturaDeasupra").className += " riseAnimation";
+	});
+
+	socket.on('ownDeath', function () {
+		validTargets = [];
+		ownVotingActive = false;
+
+		timer.classList.add("hidden");
+		dayNight.classList.add("hidden");
+
+		document.getElementById("player-list").innerHTML = '';
+		votingPlayers.innerHTML = '';
+		targetPlayers.innerHTML = '';
+	});
 
 	socket.on('message', function (data) {
 		if(data.message) 
@@ -33,6 +57,8 @@ $(document).ready(function() {
 
 	socket.on('displayVote', function (data) {
 		votingPlayers.innerHTML = '';
+
+		ownVotingActive = data;
 	});
 
 	socket.on('disableVote', function (data) {
@@ -79,19 +105,11 @@ $(document).ready(function() {
 	socket.on('gameWasStarted', function () {
 		timer.classList.remove("hidden");
 		dayNight.classList.remove("hidden");
-		console.log("da");
 	});
-
-	/*
-	var blankOption = document.createElement("option");
-	blankOption.innerHTML = 'no one';
-	blankOption.value = '';
 
 	socket.on('clearTargets', function () {
-		select.innerHTML = '';
-		select.add(blankOption);
+		targetPlayers.innerHTML = '';
 	});
-	*/
 
 	socket.on('alert', function (data) {
 		alert(data.message);
@@ -113,7 +131,7 @@ $(document).ready(function() {
 				}
 			}
 
-			if (OK)
+			if (OK && ownVotingActive)
 			{
 				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false" onClick=votePlayer("' + data[i] + '")></span> </li>');
 			}

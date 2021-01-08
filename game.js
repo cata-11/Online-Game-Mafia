@@ -32,6 +32,8 @@ function playerDeathCleanup (socket) {
 	socket.leave('village');
 	socket.leave('mafia');
 	socket.join('spectator');
+
+	socket.emit('ownDeath');
 }
 
 function killPlayer (socket) {
@@ -97,7 +99,14 @@ function shuffle (array) {
 function assignRoles () {
 	var players = [];
 	io.sockets.clients().forEach(function (socket) {
-		players.push(socket);
+		if (socket.game_nickname)
+		{
+			players.push(socket);
+		}
+		else
+		{
+			socket.emit('spectatorMode');
+		}
 	});
 	players = shuffle(players);
 
@@ -348,11 +357,17 @@ function nightLoop(duration, ticks) {
 function initialize () {
 	assignRoles();
 
+	io.sockets.clients('alive').forEach(function (socket) {
+		socket.emit('gameWasStarted');
+	}); 
+
 	updateAlivePlayerList();
 
-	if (dayStart) {
+	if (dayStart) 
+	{
 		nightLoop(0, 0);
-	} else {
+	} 
+	else {
 		io.sockets.in('mafia').emit('displayVote', true);
 		dayLoop(0, 0);
 	}
@@ -373,7 +388,7 @@ function startingCountdown (duration, ticks) {
 	} 
 	else {
 		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul porneste acum' + '</h2>'});
-		io.sockets.emit('gameWasStarted');
+		
 		initialize();
 	}
 }

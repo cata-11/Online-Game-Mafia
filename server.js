@@ -32,7 +32,8 @@ io.sockets.on('connection', function (socket) {
 	if(!game.state()){
 		game.updatePlayers();
 	} else {
-		socket.emit('message', { message: 'The game you are trying to join has already started.' });
+		socket.emit('alert', { message: 'The game you are trying to join has already started.' });
+		socket.emit('spectatorMode');
 	}
 	
 	socket.on('startGame', function() {
@@ -41,11 +42,14 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function() {
+
+		/*
 		if (socket.game_nickname) {
 			io.sockets.emit('message', { message: socket.game_nickname + ' has disconnected.' });
 		} else {
 			io.sockets.emit('message', { message: 'A client has disconnected.' });
 		}
+		*/
 
 		setTimeout(function() {
 			game.updatePlayers();
