@@ -4,9 +4,10 @@
 <head>
   <title>Mafia</title>
   <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="/timer.js"></script>
   <script src="/client.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/timer.js"></script>
+  
   <link rel="stylesheet" href="/style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -45,7 +46,7 @@
 
 
           <!--TIMER start-->
-          <div class="timer-container">
+          <div class="timer-container hidden" id="timeCountDown">
             <div id="countdown">
               <ul>
                 <li><span id="minutes"></span><span class="t">Minutes</span></li>
@@ -57,16 +58,16 @@
 
 
           <!-- role start-->
-          <div class="role-field">
+          <div class="role-field hidden" id="serverMessages">
             <h2 class="roleText">You are<span class="role">KILLER</span></h2>
           </div>
           <!-- role end-->
 
           
           <!--moon/sun start-->
-            <div>
-              <i class="fa fa-moon"></i> <!--pt soare este 'fa fa-sun'-->
-            </div>
+          <div class="hidden" id="dayNight">
+            <i class="fa fa-moon"></i> <!--pt soare este 'fa fa-sun'-->
+          </div>
           <!--moon/sun end-->
 
 

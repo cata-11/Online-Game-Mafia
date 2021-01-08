@@ -1,34 +1,26 @@
 var socket;
 
 $(document).ready(function() {
-	var messages = [];
+
 	socket = io.connect('http://'+location.host);
 	var nameButton = document.getElementById("nick");
-	var startButton = document.getElementById("startButton");
-	var content = document.getElementById("content");
 	var name = document.getElementById("name");
-	var select = document.getElementById("select");
+	var timer = document.getElementById("timeCountDown");
+	var dayNight = document.getElementById("dayNight");
+	var messages = document.getElementById("serverMessages");
 	var validTargets = [];
 
 	var votingPlayers = document.getElementById("player-voter");
 	var targetPlayers = document.getElementById("player-target");
 
 	socket.on('message', function (data) {
-		if(data.message) {
-			messages.push(data);
-			var html = '';
-			for(var i=0; i<messages.length; i++) {
-				html += messages[i].message + '<br />';
-			}
-			content.innerHTML = html;
-			$("#content").scrollTop($("#content")[0].scrollHeight);
-		} else {
+		if(data.message) 
+		{
+			messages.innerHTML = data.message;
+		} 
+		else {
 			console.log("There is a problem:", data);
 		}
-	});
-
-	socket.on('announcement', function (data) {
-		announcement.innerHTML = '<b>' + data.message + '</b>';
 	});
 
 	socket.on('hideNameField', function (data) {
@@ -36,6 +28,7 @@ $(document).ready(function() {
 		nameButton.style.display = 'none';
 
 		document.getElementById("umpluturaDeasupra").className += " riseAnimation";
+		messages.classList.remove("hidden");
 	});
 
 	socket.on('displayVote', function (data) {
@@ -44,10 +37,8 @@ $(document).ready(function() {
 
 	socket.on('disableVote', function (data) {
 		if (data) {
-			select.style.display = 'none';
 			vote.style.display = 'none';
 		} else {
-			select.style.display = 'inline';
 			vote.style.display = 'inline';
 		}
 	});
@@ -77,13 +68,30 @@ $(document).ready(function() {
 		validTargets = data;
 	});
 
+	socket.on('setCountDownTime', function (data) {
+		setCountDownTime(data.ticks);
+	});
+
+	socket.on('dayNight', function (data) {
+		dayNight.innerHTML = data.dayNight;
+	});
+
+	socket.on('gameWasStarted', function () {
+		timer.classList.remove("hidden");
+		dayNight.classList.remove("hidden");
+		console.log("da");
+	});
+
+	/*
 	var blankOption = document.createElement("option");
 	blankOption.innerHTML = 'no one';
 	blankOption.value = '';
+
 	socket.on('clearTargets', function () {
 		select.innerHTML = '';
 		select.add(blankOption);
 	});
+	*/
 
 	socket.on('alert', function (data) {
 		alert(data.message);
@@ -116,17 +124,11 @@ $(document).ready(function() {
 		}
 	});
 
-	socket.on('displayRole', function (data) {
-		document.getElementById("role").innerHTML = data;
-	});
-
 	nameButton.onclick = function() {
 		socket.emit('changeNick', name.value);
 	};
 
-	startButton.onclick = function() {
-		socket.emit('startGame');
-	}
+	//socket.emit('startGame');
 
 });
 

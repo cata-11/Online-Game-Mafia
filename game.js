@@ -93,12 +93,6 @@ function shuffle (array) {
 	return array;
 }
 
-var announcement = '';
-
-function updateAnnouncement (string) {
-	announcement = string;
-	io.sockets.emit('announcement', { message: announcement });
-}
 
 function assignRoles () {
 	var players = [];
@@ -116,7 +110,6 @@ function assignRoles () {
 		players[nr].game_role = roles['cop'];
 		players[nr].join(roles['cop'].group);
 		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['cop'].name + '. You are affiliated with the ' + roles['cop'].group + '.' });
-		players[nr].emit('displayRole', 'cop');
 		nr++;
 	}
 	for (var i = 1; i <= players.length / 7; i++)
@@ -126,7 +119,6 @@ function assignRoles () {
 		players[nr].game_role = roles['doctor'];
 		players[nr].join(roles['doctor'].group);
 		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['doctor'].name + '. You are affiliated with the ' + roles['doctor'].group + '.' });
-		players[nr].emit('displayRole', 'doctor');
 		nr++;
 	}
 
@@ -137,7 +129,6 @@ function assignRoles () {
 		players[nr].game_role = roles['mafioso'];
 		players[nr].join(roles['mafioso'].group);
 		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['mafioso'].name + '. You are affiliated with the ' + roles['mafioso'].group + '.' });
-		players[nr].emit('displayRole', 'mafio');
 		nr++;
 	}
 
@@ -148,14 +139,13 @@ function assignRoles () {
 		players[nr].game_role = roles['villager'];
 		players[nr].join(roles['villager'].group);
 		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['villager'].name + '. You are affiliated with the ' + roles['villager'].group + '.' });
-		players[nr].emit('displayRole', 'villager');
 		nr++;
 	}
 }
 
 function endGame (winner) {
 	state = 3;
-	updateAnnouncement(winner + ' wins the game!');
+	io.sockets.emit('message', { message: '<h2 class="roleText">' + winner + ' wins the game!' + '</h2>'});
 	io.sockets.clients('alive').forEach(function (socket) {
 		playerDeathCleanup(socket);
 	});
@@ -233,7 +223,8 @@ function dayLoop(duration, ticks) {
 	var ticksLeft = duration - ticks;
 	if (state !== 3) {
 		if (ticksLeft && !endDay) {
-			updateAnnouncement('Day ends in ' + ticksLeft + ' second(s)');
+			io.sockets.emit('setCountDownTime', { ticks: ticksLeft});
+
 			setTimeout(dayLoop, 1000, duration, ticks + 1);
 		} else {
 			if (dayCount > 0 || nightCount > 0) {
@@ -249,7 +240,7 @@ function dayLoop(duration, ticks) {
 
 			if (state !== 3) {
 				nightCount++;
-				updateAnnouncement('It is now nighttime');
+				io.sockets.emit('dayNight', { dayNight: '<i class="fa fa-moon"></i>'});
 
 				io.sockets.emit('clearTargets');
 
@@ -303,7 +294,7 @@ function nightLoop(duration, ticks) {
 	var ticksLeft = duration - ticks;
 	if (state !== 3) {
 		if (ticksLeft && !endDay) {
-			updateAnnouncement('Night ends in ' + ticksLeft + ' second(s)');
+			io.sockets.emit('setCountDownTime', { ticks: ticksLeft});
 			setTimeout(nightLoop, 1000, duration, ticks + 1);
 		} else {
 			if (dayCount > 0 || nightCount > 0) {
@@ -326,7 +317,7 @@ function nightLoop(duration, ticks) {
 
 			if (state !== 3) { //surely there's a cleaner way to do this
 				dayCount++;
-				updateAnnouncement('It is now daytime');
+				io.sockets.emit('dayNight', { dayNight: '<i class="fa fa-sun"></i>'});
 
 				io.sockets.in('alive').emit('displayVote', true);
 
@@ -375,11 +366,14 @@ function startingCountdown (duration, ticks) {
 	});
 	
 	var ticksLeft = duration - ticks;
-	if (ticksLeft) {
-		updateAnnouncement('Game starting in ' + ticksLeft + ' second(s)');
+	if (ticksLeft) 
+	{
+		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul porneste in ' + ticksLeft + ' secund(e)' + '</h2>'});
 		startingCountdownTimer = setTimeout(startingCountdown, 1000, duration, ticks + 1);
-	} else {
-		updateAnnouncement('Game starting now');
+	} 
+	else {
+		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul porneste acum' + '</h2>'});
+		io.sockets.emit('gameWasStarted');
 		initialize();
 	}
 }
@@ -433,7 +427,7 @@ module.exports = {
 	
 		if (state == 0)
 		{
-			updateAnnouncement('Trebuie sa fie macar 7 playeri ca sa inceapa ocul');
+			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Trebuie sa fie macar 7 jucatori ca jocul sa fie pornit' + '</h2>'});
 
 			io.sockets.clients().forEach(function (socket) {
 				if (socket.game_nickname != null)
@@ -456,7 +450,7 @@ module.exports = {
 		{
 			state = -1;
 			startingCountdownTimer = setTimeout(startingCountdown, 1000, this.countdownTime, 0);
-			updateAnnouncement('Game has been started');
+			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul a fost initiat' + '</h2>'});
 		}
 	},
 	vote: function(socket, data) {

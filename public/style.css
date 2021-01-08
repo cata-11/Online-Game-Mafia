@@ -278,3 +278,7 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
   display: none;
   padding: 1rem;
 }
+
+.hidden {
+  display: none;
+}

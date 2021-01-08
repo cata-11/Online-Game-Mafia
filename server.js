@@ -23,10 +23,6 @@ game.countdownTime = 10;
 
 io.sockets.on('connection', function (socket) {
 	socket.emit('message', { message: 'Welcome to the lobby.' });
-	socket.broadcast.emit('message', { message: 'A new client has connected.' });
-
-	//request announcement and header from the game
-	socket.emit('announcement', { message: game.announcement() });
 
 	socket.game_alive = false;
 
@@ -34,7 +30,6 @@ io.sockets.on('connection', function (socket) {
 
 
 	if(!game.state()){
-		socket.emit('message', { message: 'Please pick a nickname to register as a player.' });
 		game.updatePlayers();
 	} else {
 		socket.emit('message', { message: 'The game you are trying to join has already started.' });
