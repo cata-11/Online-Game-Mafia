@@ -14,6 +14,10 @@ $(document).ready(function() {
 	var votingPlayers = document.getElementById("player-voter");
 	var targetPlayers = document.getElementById("player-target");
 
+	socket.on('refresh', function () {
+		location.reload(); 
+	});
+
 	socket.on('spectatorMode', function () {
 		validTargets = [];
 		ownVotingActive = false;
@@ -133,7 +137,8 @@ $(document).ready(function() {
 
 			if (OK && ownVotingActive)
 			{
-				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false" onClick=votePlayer("' + data[i] + '")></span> </li>');
+				let clickRoute = `onClick="votePlayer('${data[i]}')"`;
+				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false" ' + clickRoute + '></span> </li>');
 			}
 			else
 			{

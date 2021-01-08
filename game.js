@@ -230,7 +230,7 @@ function handlePowerVotes () {
 var endDay = false;
 function dayLoop(duration, ticks) {
 	var ticksLeft = duration - ticks;
-	if (state !== 3) {
+	if (state !== 3 && state !== 0) {
 		if (ticksLeft && !endDay) {
 			io.sockets.emit('setCountDownTime', { ticks: ticksLeft});
 
@@ -247,7 +247,7 @@ function dayLoop(duration, ticks) {
 			}
 
 
-			if (state !== 3) {
+			if (state !== 3 && state !== 0) {
 				nightCount++;
 				io.sockets.emit('dayNight', { dayNight: '<i class="fa fa-moon"></i>'});
 
@@ -301,7 +301,7 @@ function dayLoop(duration, ticks) {
 
 function nightLoop(duration, ticks) {
 	var ticksLeft = duration - ticks;
-	if (state !== 3) {
+	if (state !== 3 && state !== 0) {
 		if (ticksLeft && !endDay) {
 			io.sockets.emit('setCountDownTime', { ticks: ticksLeft});
 			setTimeout(nightLoop, 1000, duration, ticks + 1);
@@ -324,7 +324,7 @@ function nightLoop(duration, ticks) {
 				});
 			}
 
-			if (state !== 3) { //surely there's a cleaner way to do this
+			if (state !== 3 && state !== 0) { //surely there's a cleaner way to do this
 				dayCount++;
 				io.sockets.emit('dayNight', { dayNight: '<i class="fa fa-sun"></i>'});
 
@@ -467,6 +467,13 @@ module.exports = {
 			startingCountdownTimer = setTimeout(startingCountdown, 1000, this.countdownTime, 0);
 			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul a fost initiat' + '</h2>'});
 		}
+	},
+	restartGame: function() {
+		state = 0;
+
+		io.sockets.clients().forEach(function (socket) {
+			socket.emit("refresh");
+		});
 	},
 	vote: function(socket, data) {
 		data.username = socket.game_nickname;

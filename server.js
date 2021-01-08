@@ -14,6 +14,10 @@ app.get('/', function(req, res){
 	res.render('index.html');
 });
 
+app.get('/manage', function(req, res){
+	res.render('manager.html');
+});
+
 app.use(express.static(__dirname + '/public'));
 
 global.io = require('socket.io').listen(app.listen(port));
@@ -38,7 +42,10 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('startGame', function() {
 		game.startGame();
-		
+	});
+
+	socket.on('restartGame', function() {
+		game.restartGame();
 	});
 
 	socket.on('disconnect', function() {
