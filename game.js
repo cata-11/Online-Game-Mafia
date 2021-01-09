@@ -56,7 +56,7 @@ var roles = {
 		group: 'village',
 		power: true,
 		powerFunc: function (socket, chosenPlayer) { //investigates a player during the night and reports their group affiliation
-			socket.emit('message', { message: 'It appears that ' + chosenPlayer.game_nickname + ' is affiliated with the ' + chosenPlayer.game_role.group + '.'});
+			socket.emit('message', { message: '<h2>'+'It appears that ' + '<span class="player-nickname">' + chosenPlayer.game_nickname + '</span>' + ' is affiliated with the ' + chosenPlayer.game_role.group + '</h2>'}); 
 		}
 	},
 	doctor: {
@@ -65,15 +65,15 @@ var roles = {
 		power: true,
 		powerFunc: function (socket, chosenPlayer) { //chooses a player to visit during the night to protect from dying overnight
 			if (chosenPlayer.game_dying) {
-				socket.emit('message', { message: 'When you open the door to ' + chosenPlayer.game_nickname + '\'s house, you see them face down in a pool of blood! You quickly patch them up before any permanent damage is done.'});
+				socket.emit('message', { message: '<h2 class="roleText">' + 'When you open the door to ' + '<span class="player-nickname">' + chosenPlayer.game_nickname + '\'s</span>' + ' house, you see him covered in blood! You quickly patch him up to save his life' + '</h2>'}); 
 				chosenPlayer.game_immunity = true;
 			} else {
-				socket.emit('message', { message: 'You pay ' + chosenPlayer.game_nickname + ' a visit right before dawn breaks, only to find them already in perfect health.'});
+				socket.emit('message', { message: '<h2 class="roleText">' + 'You pay ' + '<span class="player-nickname">' +  chosenPlayer.game_nickname + '</span>'+ ' a visit and find him in perfect health' + '</h2>' }); 
 			}
 		}
 	},
-	mafioso: {
-		name: 'mafioso',
+	killer: {
+		name: 'killer',
 		group: 'mafia',
 		power: false
 	}
@@ -118,7 +118,7 @@ function assignRoles () {
 		players[nr].join('alive');
 		players[nr].game_role = roles['cop'];
 		players[nr].join(roles['cop'].group);
-		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['cop'].name + '. You are affiliated with the ' + roles['cop'].group + '.' });
+		players[nr].emit('message', { message: '<h2 class="roleText">' + 'You are the ' + '<span class="role">' + roles['cop'].name + '</span>' + '</h2>' }); 
 		nr++;
 	}
 	for (var i = 1; i <= players.length / 7; i++)
@@ -127,7 +127,7 @@ function assignRoles () {
 		players[nr].join('alive');
 		players[nr].game_role = roles['doctor'];
 		players[nr].join(roles['doctor'].group);
-		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['doctor'].name + '. You are affiliated with the ' + roles['doctor'].group + '.' });
+		players[nr].emit('message', { message: '<h2 class="roleText">' + 'You are the ' + '<span class="role">' + roles['doctor'].name + '</span>' + '</h2>' }); 
 		nr++;
 	}
 
@@ -135,9 +135,9 @@ function assignRoles () {
 	{
 		players[nr].game_alive = true;
 		players[nr].join('alive');
-		players[nr].game_role = roles['mafioso'];
-		players[nr].join(roles['mafioso'].group);
-		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['mafioso'].name + '. You are affiliated with the ' + roles['mafioso'].group + '.' });
+		players[nr].game_role = roles['killer'];
+		players[nr].join(roles['killer'].group);
+		players[nr].emit('message', { message: '<h2 class="roleText">' + 'You are the ' + '<span class="role">' + roles['killer'].name + '</span>' + '</h2>' }); 
 		nr++;
 	}
 
@@ -147,14 +147,14 @@ function assignRoles () {
 		players[nr].join('alive');
 		players[nr].game_role = roles['villager'];
 		players[nr].join(roles['villager'].group);
-		players[nr].emit('message', { message: 'You have been assigned the role of ' + roles['villager'].name + '. You are affiliated with the ' + roles['villager'].group + '.' });
+		players[nr].emit('message', { message: '<h2 class="roleText">' + 'You are a ' + '<span class="role">' + roles['villager'].name + '</span>' + '</h2>'}); 
 		nr++;
 	}
 }
 
 function endGame (winner) {
 	state = 3;
-	io.sockets.emit('message', { message: '<h2 class="roleText">' + winner + ' wins the game!' + '</h2>'});
+	io.sockets.emit('message', { message: '<h2 class="roleText">' + '<span class="role">' + winner + '</span>'+ ' wins the game!' + '</h2>'}); 
 	io.sockets.clients('alive').forEach(function (socket) {
 		playerDeathCleanup(socket);
 	});
@@ -240,7 +240,7 @@ function dayLoop(duration, ticks) {
 				handleVotes();
 				io.sockets.clients('alive').forEach(function (socket) {
 					if (socket.game_dying) {
-						io.sockets.emit('message', { message: socket.game_nickname + ', the ' + socket.game_role.name + ', was lynched by the town!'});
+						io.sockets.emit('message', { message: '<h2 class="roleText">' + '<span class="player-nickname">' + socket.game_nickname + '</span>' + ', the ' +'<span class="role">' + socket.game_role.name +  '</span>' + ', was lynched by the town!' + '</h2>'});
 						killPlayer(socket);
 					}
 				});
@@ -312,14 +312,13 @@ function nightLoop(duration, ticks) {
 				io.sockets.clients('alive').forEach(function (socket) {
 					if (socket.game_dying) {
 						if (socket.game_immunity) {
-							socket.emit('message', { message: 'You wake up covered in bloodied bandages with a horrible headache, remembering nothing of the previous night.'});
+							socket.emit('message', { message: '<h2 class="roleText">' + 'You wake up covered in bloodied bandages with a horrible headache, remembering nothing of the previous night.' + '</h2>'}); 
 								socket.game_dying = false;
 						} else {
-							io.sockets.emit('message', { message: socket.game_nickname + ', the ' + socket.game_role.name + ', was killed in the night!'});
+							io.sockets.emit('message', { message: '<h2 class="roleText">' + '<span class="player-nickname">' + socket.game_nickname + '</span>' + ', the ' +'<span class="role">' + socket.game_role.name +  '</span>' + ', was killed in the night!' + '</h2>'}); 
 							killPlayer(socket);
 						}
 					}
-
 					socket.game_immunity = false; //immunity only lasts the night it is given
 				});
 			}
@@ -383,12 +382,11 @@ function startingCountdown (duration, ticks) {
 	var ticksLeft = duration - ticks;
 	if (ticksLeft) 
 	{
-		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul porneste in ' + ticksLeft + ' secund(e)' + '</h2>'});
+		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'The '+  '<span class="role">' + 'game' + '</span>' + ' starts in ' + ticksLeft + ' seconds' + '</h2>'});
 		startingCountdownTimer = setTimeout(startingCountdown, 1000, duration, ticks + 1);
 	} 
 	else {
-		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul porneste acum' + '</h2>'});
-		
+		io.sockets.emit('message', { message: '<h2 class="roleText">' + 'The game is starting now' + '</h2>'});
 		initialize();
 	}
 }
@@ -442,7 +440,7 @@ module.exports = {
 	
 		if (state == 0)
 		{
-			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Trebuie sa fie macar 7 jucatori ca jocul sa fie pornit' + '</h2>'});
+			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'We need at least 7 players to start the game' + '</h2>'});
 
 			io.sockets.clients().forEach(function (socket) {
 				if (socket.game_nickname != null)
@@ -465,7 +463,7 @@ module.exports = {
 		{
 			state = -1;
 			startingCountdownTimer = setTimeout(startingCountdown, 1000, this.countdownTime, 0);
-			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'Jocul a fost initiat' + '</h2>'});
+			io.sockets.emit('message', { message: '<h2 class="roleText">' + 'The game was initialized' + '</h2>'}); 
 		}
 	},
 	restartGame: function() {

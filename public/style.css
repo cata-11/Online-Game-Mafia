@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@800&display=swap');
+.container-fluid{
+  height: 100vh;
+}
 .roleText {
   letter-spacing: 0.5rem;
   font-size: 2rem;
@@ -11,7 +14,12 @@
   color: RGB(102, 2, 0);
   font-size: 2rem;
   filter: brightness(250%);
-  margin-left: 1rem;
+  text-transform: uppercase;
+}
+.player-nickname {
+  color: rgb(255, 217, 0);
+  font-size: 2rem;
+  filter: brightness(250%);
 }
 .fa-moon {
   color: rgb(255, 217, 0);
@@ -23,8 +31,58 @@
   font-size: 12rem;
   margin-top: 7vh;
 }
+.fix {
+  display: flex;
+  flex-direction: row;
+
+}
+.voters{
+  min-width: 50%;
+
+}
+.targets{
+  min-width: 50%;
+}
 
 
+@media only screen and (max-width: 1400px) {
+  .role {
+    font-size: 1.5rem;
+  }
+  .roleText{
+    font-size: 1.5rem;
+  }
+  .player-nickname {
+    font-size: 1.5rem;
+  }
+  .fa-moon{
+    font-size: 10rem;
+  }
+  .fa-sun{
+    font-size: 10rem;
+  }
+}
+@media only screen and (max-width: 1060px) {
+  .role {
+    font-size: 1.2rem;
+  }
+  .roleText{
+    font-size: 1.2rem;
+  }
+  .player-nickname {
+    font-size: 1.2rem;
+  }
+}
+
+
+@media only screen and (max-width: 1100px) {
+.targets li{
+  font-size: 1.2rem;
+}
+.voters li {
+  font-size: 1.2rem;
+}
+}
 
 .main {
   background-image: url("https://cdn.wallpapersafari.com/87/97/nOthRF.jpg");
@@ -33,19 +91,16 @@
   width: 100%;
   height: 100vh;
 }
-#input {
-  color: white;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  margin: 0;
-}
-
 #nick {
   color: white;
   background-color: transparent;
   font-size: xx-large;
   border: none;
+  outline: none;
+  transition: all .5s;
+}
+#nick:hover{
+  filter: brightness(70%);
 }
 .align {
   display: flex;
@@ -76,15 +131,12 @@
   padding: .5rem;
   transition: all 1s;
 }
-.voteBtn-active{
-  color: rgb(138, 226, 23);
-  outline: none;
-}
 .voteBtn:hover{
   background-color: rgba(165, 159, 159, 0.623);
   cursor: pointer;
   outline: none;
 }
+
 .middle {
 	display: flex;
 	text-align: center;
@@ -149,7 +201,7 @@
   flex-direction: column;
   width: 90%;
   height: 80vh;
-  margin: 4.5rem 2rem;
+  margin: 4.5rem 2rem 0 2rem;
   border-radius: 1%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -169,9 +221,9 @@
   flex-direction: column;
   width: 90%;
   height: 80vh;
-  margin: 4.5rem 2rem 4.5rem 0;
+  margin: 4.5rem 2rem 0rem 0;
   border-radius: 1%;
-  overflow-y: auto;
+  overflow-y: auto ;
   overflow-x: hidden;
 }
 .votersCard::-webkit-scrollbar {
@@ -183,16 +235,14 @@
 .votersCard::-webkit-scrollbar-thumb {
   background: rgb(26, 26, 26);
 }
-
 .playersTitle {
   font-size: 2.2rem;
   color: rgb(236, 224, 46);
   padding: 0.3rem;
   padding-bottom: 0;
   margin: 0 auto;
-
+  font-weight: inherit;
 }
-
 .votesCard {
   background: rgba(215, 211, 226, 0.2);
   display: flex;
@@ -201,13 +251,13 @@
   height: 80vh;
   margin: 3rem 0 0 0;
   border-radius: 1%;
+  position: relative;
 }
 .votesTitles {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
-
 .input {
 outline: none;
 color: white;
@@ -218,23 +268,17 @@ width: 90%;
 font-size: 1.2rem;
 font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
-
 .inputContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  
 }
-
 *{
   box-sizing: border-box;
   padding: 0;
+ 
 }
-
-
-
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@800&display=swap');
 .timer-container {
   margin: 2rem auto;
   text-align: center;
@@ -272,11 +316,6 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
 .t{
   font-size: 1.25rem;
   color: white;
-}
-
-#content {
-  display: none;
-  padding: 1rem;
 }
 
 .hidden {

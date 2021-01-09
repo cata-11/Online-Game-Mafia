@@ -26,7 +26,7 @@ console.log("Listening on port " + port);
 game.countdownTime = 10;
 
 io.sockets.on('connection', function (socket) {
-	socket.emit('message', { message: 'Welcome to the lobby.' });
+	//socket.emit('message', { message: 'Welcome to the lobby.' });
 
 	socket.game_alive = false;
 

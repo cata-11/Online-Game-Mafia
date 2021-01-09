@@ -11,6 +11,7 @@ $(document).ready(function() {
 	var validTargets = [];
 	var ownVotingActive;
 
+	var playersParent = document.getElementById("players-parent");
 	var votingPlayers = document.getElementById("player-voter");
 	var targetPlayers = document.getElementById("player-target");
 
@@ -44,6 +45,7 @@ $(document).ready(function() {
 	socket.on('message', function (data) {
 		if(data.message) 
 		{
+			
 			messages.innerHTML = data.message;
 		} 
 		else {
@@ -76,13 +78,14 @@ $(document).ready(function() {
 	socket.on('votingPlayers', function (data) {
 		var votingPlayersHTML = '';
 		var targetPlayersHTML = '';
-
+		var playersParentHTML = '';
+		
 		for (var i = 0; i < data.length; i++) {
-			votingPlayersHTML += '<li class="player">' + data[i] + '</li>';
-			targetPlayersHTML += '<li class="player" id="' + data[i] + '_vote"></li>';
+			votingPlayersHTML += '<td class="player">' + data[i] + '</td>';
+			targetPlayersHTML += '<td class="player" id="' + data[i] + '_vote"></td>';
 		}
-		votingPlayers.innerHTML = votingPlayersHTML;
-		targetPlayers.innerHTML = targetPlayersHTML;
+		playersParentHTML += '<tr>' + votingPlayersHTML + targetPlayersHTML + '</tr>';
+		playersParent.innerHTML = playersParentHTML;
 	});
 
 	socket.on('playerVote', function (data) {
