@@ -121,6 +121,13 @@
   display: flex;
   justify-content: space-between;
 }
+.playerVoter {
+  width: 100%;
+  font-size: 1.6rem;
+  color: white;
+  margin: 0.4rem;
+  text-align: center;
+}
 .voteBtn {
   margin: 0 .5rem;
   border-radius: 50%;
@@ -320,4 +327,9 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
 
 .hidden {
   display: none;
+}
+
+.voters_table {
+  display: flex;
+  justify-content: space-between;
 }

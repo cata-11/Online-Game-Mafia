@@ -12,8 +12,6 @@ $(document).ready(function() {
 	var ownVotingActive;
 
 	var playersParent = document.getElementById("players-parent");
-	var votingPlayers = document.getElementById("player-voter");
-	var targetPlayers = document.getElementById("player-target");
 
 	socket.on('refresh', function () {
 		location.reload(); 
@@ -38,8 +36,8 @@ $(document).ready(function() {
 		dayNight.classList.add("hidden");
 
 		document.getElementById("player-list").innerHTML = '';
-		votingPlayers.innerHTML = '';
-		targetPlayers.innerHTML = '';
+		
+		playersParent.innerHTML = ' ';
 	});
 
 	socket.on('message', function (data) {
@@ -62,7 +60,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('displayVote', function (data) {
-		votingPlayers.innerHTML = '';
+		playersParent.innerHTML = '';
 
 		ownVotingActive = data;
 	});
@@ -76,15 +74,15 @@ $(document).ready(function() {
 	});
 
 	socket.on('votingPlayers', function (data) {
-		var votingPlayersHTML = '';
-		var targetPlayersHTML = '';
 		var playersParentHTML = '';
 		
 		for (var i = 0; i < data.length; i++) {
-			votingPlayersHTML += '<td class="player">' + data[i] + '</td>';
-			targetPlayersHTML += '<td class="player" id="' + data[i] + '_vote"></td>';
+			let votingPlayersHTML = '<td class="playerVoter">' + data[i] + '</td>';
+			let targetPlayersHTML = '<td class="playerVoter" id="' + data[i] + '_vote"></td>';
+
+			playersParentHTML += '<tr class="voters_table">' + votingPlayersHTML + targetPlayersHTML + '</tr>';
 		}
-		playersParentHTML += '<tr>' + votingPlayersHTML + targetPlayersHTML + '</tr>';
+
 		playersParent.innerHTML = playersParentHTML;
 	});
 
@@ -115,7 +113,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('clearTargets', function () {
-		targetPlayers.innerHTML = '';
+		playersParent.innerHTML = ' ';
 	});
 
 	socket.on('alert', function (data) {
