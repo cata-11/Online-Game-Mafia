@@ -56,7 +56,7 @@ var roles = {
 		group: 'village',
 		power: true,
 		powerFunc: function (socket, chosenPlayer) { //investigates a player during the night and reports their group affiliation
-			socket.emit('message', { message: '<h2>'+'It appears that ' + '<span class="player-nickname">' + chosenPlayer.game_nickname + '</span>' + ' is affiliated with the ' + chosenPlayer.game_role.group + '</h2>'}); 
+			socket.emit('message', { message: '<h2 class="roleText">'+'It appears that ' + '<span class="player-nickname">' + chosenPlayer.game_nickname + '</span>' + ' is affiliated with the ' + chosenPlayer.game_role.group + '</h2>'}); 
 		}
 	},
 	doctor: {
