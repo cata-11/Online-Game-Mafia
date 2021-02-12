@@ -338,3 +338,9 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
   background-color: rgba(117, 114, 114, 0.623);
   outline: none;
 }
+
+#serverMessages
+{
+  height: 200px;
+  overflow-y: auto;
+}

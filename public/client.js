@@ -10,6 +10,7 @@ $(document).ready(function() {
 	var messages = document.getElementById("serverMessages");
 	var validTargets = [];
 	var ownVotingActive;
+	let game_started_proper = false;
 
 	var playersParent = document.getElementById("players-parent");
 
@@ -43,8 +44,14 @@ $(document).ready(function() {
 	socket.on('message', function (data) {
 		if(data.message) 
 		{
-			
-			messages.innerHTML = data.message;
+			if (!game_started_proper)
+			{
+				messages.innerHTML = data.message;
+			}
+			else
+			{
+				messages.insertAdjacentHTML('beforeend', data.message);
+			}
 		} 
 		else {
 			console.log("There is a problem:", data);
@@ -97,6 +104,7 @@ $(document).ready(function() {
 
 	socket.on('validTargets', function (data) {
 		validTargets = data;
+		game_started_proper = true;
 	});
 
 	socket.on('setCountDownTime', function (data) {
