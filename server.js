@@ -21,6 +21,7 @@ app.get('/manage', function(req, res){
 app.use(express.static(__dirname + '/public'));
 
 global.io = require('socket.io').listen(app.listen(port));
+io.set('log level', 2);
 console.log("Listening on port " + port);
 
 game.countdownTime = 10;
@@ -71,23 +72,42 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('changeNick', function (data) {
 		if (data && !socket.game_nickname) {
-			var isUnique = true;
-			io.sockets.clients().forEach(function (socket) {
-				if (data == socket.game_nickname) { //custom properties prefixed with game_ so as to not cause collisions
-					isUnique = false;
-				}
-			});
 
-			if (isUnique) {
-				socket.game_nickname = data;
-				socket.emit('hideNameField');
-				if(!game.state()){
-					game.updatePlayers();
+			let nickIsNotDangerous = true;
+			let splChars = "*|,\":<>[]{}`\';()@&$#% ";
+			for (var i = 0; i < data.length; i++) {
+				if (splChars.indexOf(data.charAt(i)) != -1)
+				{
+					nickIsNotDangerous = false;
 				}
-			} else {
-				socket.emit('alert', { message: 'Nickname is not unique.'});
 			}
-		} else {
+
+			if (nickIsNotDangerous)
+			{
+				let isUnique = true;
+				io.sockets.clients().forEach(function (socket) {
+					if (data == socket.game_nickname) { //custom properties prefixed with game_ so as to not cause collisions
+						isUnique = false;
+					}
+				});
+	
+				if (isUnique) {
+					socket.game_nickname = data;
+					socket.emit('hideNameField');
+					if(!game.state()){
+						game.updatePlayers();
+					}
+				} else {
+					socket.emit('alert', { message: 'Nickname is not unique.'});
+				}
+			}
+			else
+			{
+				socket.emit('alert', { message: `Nickname should not contain these characters: ${splChars} or space`  });
+			}
+		} 
+		else 
+		{
 			socket.emit('alert', { message: 'Nickname is not valid.' });
 		}
 	});

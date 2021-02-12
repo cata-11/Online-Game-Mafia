@@ -333,3 +333,8 @@ font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans
   display: flex;
   justify-content: space-between;
 }
+
+.playerVoteBtn_clicked {
+  background-color: rgba(117, 114, 114, 0.623);
+  outline: none;
+}

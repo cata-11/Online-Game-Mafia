@@ -139,7 +139,7 @@ $(document).ready(function() {
 			if (OK && ownVotingActive)
 			{
 				let clickRoute = `onClick="votePlayer('${data[i]}')"`;
-				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" data-icon="mdi-vote" data-inline="false" ' + clickRoute + '></span> </li>');
+				list.append('<li class="player">' + data[i] + '<span class="iconify voteBtn" id="' + `${data[i]}_voteBtn` + '" data-icon="mdi-vote" data-inline="false" ' + clickRoute + '></span> </li>');
 			}
 			else
 			{
@@ -158,5 +158,14 @@ $(document).ready(function() {
 
 function votePlayer(playerName)
 {
+	AllPlayerVoteBtns =  document.getElementsByClassName("voteBtn");
+	for (let i = 0; i < AllPlayerVoteBtns.length; i++)
+	{
+		AllPlayerVoteBtns[i].classList.remove("playerVoteBtn_clicked");
+	}
+
+	let playerVoteBtn = document.getElementById(playerName + "_voteBtn");
+	playerVoteBtn.classList.add("playerVoteBtn_clicked");
+
 	socket.emit('vote', { message: playerName });
 }
